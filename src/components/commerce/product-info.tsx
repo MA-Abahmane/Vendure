@@ -1,17 +1,17 @@
 'use client';
 
-import {useState, useMemo, useTransition} from 'react';
-import {useSearchParams} from 'next/navigation';
-import {usePathname, useRouter} from '@/i18n/navigation';
-import {Button} from '@/components/ui/button';
-import {Label} from '@/components/ui/label';
-import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
-import {Separator} from '@/components/ui/separator';
-import {ShoppingCart, CheckCircle2} from 'lucide-react';
-import {addToCart} from '@/app/[locale]/product/[slug]/actions';
-import {toast} from 'sonner';
-import {Price} from '@/components/commerce/price';
-import {useTranslations} from 'next-intl';
+import { useState, useMemo, useTransition } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from '@/i18n/navigation';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Separator } from '@/components/ui/separator';
+import { ShoppingCart, CheckCircle2 } from 'lucide-react';
+import { addToCart } from '@/app/[locale]/product/[slug]/actions';
+import { toast } from 'sonner';
+import { Price } from '@/components/commerce/price';
+import { useTranslations } from 'next-intl';
 
 interface ProductInfoProps {
     product: {
@@ -51,7 +51,7 @@ interface ProductInfoProps {
     currencyCode: string;
 }
 
-export function ProductInfo({product, searchParams, currencyCode}: ProductInfoProps) {
+export function ProductInfo({ product, searchParams, currencyCode }: ProductInfoProps) {
     const t = useTranslations('Product');
     const pathname = usePathname();
     const router = useRouter();
@@ -111,7 +111,7 @@ export function ProductInfo({product, searchParams, currencyCode}: ProductInfoPr
             // Update URL with option code
             const params = new URLSearchParams(currentSearchParams);
             params.set(group.code, option.code);
-            router.push(`${pathname}?${params.toString()}`, {scroll: false});
+            router.push(`${pathname}?${params.toString()}`, { scroll: false });
         }
     };
 
@@ -124,7 +124,7 @@ export function ProductInfo({product, searchParams, currencyCode}: ProductInfoPr
             if (result.success) {
                 setIsAdded(true);
                 toast.success(t('addedToCartMessage'), {
-                    description: t('addedToCartDescription', {name: product.name}),
+                    description: t('addedToCartDescription', { name: product.name }),
                 });
 
                 // Reset the added state after 2 seconds
@@ -147,7 +147,7 @@ export function ProductInfo({product, searchParams, currencyCode}: ProductInfoPr
                 <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{product.name}</h1>
                 {selectedVariant && (
                     <p className="text-2xl md:text-3xl text-muted-foreground font-semibold mt-3">
-                        <Price value={selectedVariant.priceWithTax} currencyCode={currencyCode}/>
+                        <Price value={selectedVariant.priceWithTax} currencyCode={currencyCode} />
                     </p>
                 )}
             </div>
@@ -156,7 +156,7 @@ export function ProductInfo({product, searchParams, currencyCode}: ProductInfoPr
 
             {/* Product Description */}
             <div className="prose prose-sm max-w-none text-muted-foreground">
-                <div dangerouslySetInnerHTML={{__html: product.description}}/>
+                <div dangerouslySetInnerHTML={{ __html: product.description }} />
             </div>
 
             {/* Option Groups */}
@@ -173,7 +173,8 @@ export function ProductInfo({product, searchParams, currencyCode}: ProductInfoPr
                             >
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                     {group.options.map((option) => (
-                                        <div key={option.id}>
+                                        // We apply the 'flex' and 'relative' here, but do not wrap the input and label separately
+                                        <div key={option.id} className="relative flex">
                                             <RadioGroupItem
                                                 value={option.id}
                                                 id={option.id}
@@ -181,7 +182,7 @@ export function ProductInfo({product, searchParams, currencyCode}: ProductInfoPr
                                             />
                                             <Label
                                                 htmlFor={option.id}
-                                                className="flex items-center justify-center rounded-lg border-2 border-muted bg-popover px-4 py-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary/20 peer-data-[state=checked]:bg-primary/5 cursor-pointer transition-all"
+                                                className="flex flex-1 cursor-pointer items-center justify-center rounded-lg border-2 border-muted bg-popover px-4 py-3 text-sm font-medium transition-all hover:bg-accent hover:text-accent-foreground peer-data-checked:border-primary peer-data-checked:bg-primary/5 peer-data-checked:ring-2 peer-data-checked:ring-primary/20"
                                             >
                                                 {option.name}
                                             </Label>
@@ -221,12 +222,12 @@ export function ProductInfo({product, searchParams, currencyCode}: ProductInfoPr
                 >
                     {isAdded ? (
                         <>
-                            <CheckCircle2 className="mr-2 h-5 w-5"/>
+                            <CheckCircle2 className="mr-2 h-5 w-5" />
                             {t('addedToCart')}
                         </>
                     ) : (
                         <>
-                            <ShoppingCart className="mr-2 h-5 w-5"/>
+                            <ShoppingCart className="mr-2 h-5 w-5" />
                             {isPending
                                 ? t('adding')
                                 : !selectedVariant && product.optionGroups.length > 0
@@ -242,7 +243,7 @@ export function ProductInfo({product, searchParams, currencyCode}: ProductInfoPr
             {/* SKU */}
             {selectedVariant && (
                 <div className="text-xs text-muted-foreground">
-                    {t('sku', {sku: selectedVariant.sku})}
+                    {t('sku', { sku: selectedVariant.sku })}
                 </div>
             )}
         </div>

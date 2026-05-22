@@ -17,6 +17,12 @@ const nextConfig: NextConfig = {
       	   hostname: '132.145.45.101',
      	   port: '',
      	   pathname: '/assets/**',
+            },
+            {
+        	   protocol: 'https',
+      	   hostname: 'vendure01.vercel.app',
+     	   port: '',
+     	   pathname: '/assets/**',
             }
         ],
     },
