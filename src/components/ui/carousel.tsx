@@ -4,6 +4,7 @@ import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react"
+import {useLocale} from 'next-intl'
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -51,9 +52,12 @@ function Carousel({
   children,
   ...props
 }: React.ComponentProps<"div"> & CarouselProps) {
+  const locale = useLocale()
+  const isRtl = locale === 'ar'
   const [carouselRef, api] = useEmblaCarousel(
     {
       ...opts,
+      direction: isRtl ? 'rtl' : 'ltr',
       axis: orientation === "horizontal" ? "x" : "y",
     },
     plugins
@@ -79,13 +83,15 @@ function Carousel({
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (event.key === "ArrowLeft") {
         event.preventDefault()
-        scrollPrev()
+        if (isRtl) scrollNext()
+        else scrollPrev()
       } else if (event.key === "ArrowRight") {
         event.preventDefault()
-        scrollNext()
+        if (isRtl) scrollPrev()
+        else scrollNext()
       }
     },
-    [scrollPrev, scrollNext]
+    [isRtl, scrollPrev, scrollNext]
   )
 
   React.useEffect(() => {
@@ -134,6 +140,8 @@ function Carousel({
 
 function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
   const { carouselRef, orientation } = useCarousel()
+  const locale = useLocale()
+  const isRtl = locale === 'ar'
 
   return (
     <div
@@ -144,7 +152,11 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
       <div
         className={cn(
           "flex",
-          orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
+          orientation === "horizontal"
+            ? isRtl
+              ? "-mr-4"
+              : "-ml-4"
+            : "-mt-4 flex-col",
           className
         )}
         {...props}
@@ -155,6 +167,8 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
 
 function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
   const { orientation } = useCarousel()
+  const locale = useLocale()
+  const isRtl = locale === 'ar'
 
   return (
     <div
@@ -163,7 +177,7 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="carousel-item"
       className={cn(
         "min-w-0 shrink-0 grow-0 basis-full",
-        orientation === "horizontal" ? "pl-4" : "pt-4",
+        orientation === "horizontal" ? (isRtl ? "pr-4" : "pl-4") : "pt-4",
         className
       )}
       {...props}
@@ -178,6 +192,8 @@ function CarouselPrevious({
   ...props
 }: React.ComponentProps<typeof Button>) {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel()
+  const locale = useLocale()
+  const isRtl = locale === 'ar'
 
   return (
     <Button
@@ -187,7 +203,9 @@ function CarouselPrevious({
       className={cn(
         "absolute touch-manipulation rounded-full",
         orientation === "horizontal"
-          ? "top-1/2 -left-12 -translate-y-1/2"
+          ? isRtl
+            ? "top-1/2 -right-12 -translate-y-1/2"
+            : "top-1/2 -left-12 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
@@ -195,7 +213,7 @@ function CarouselPrevious({
       onClick={scrollPrev}
       {...props}
     >
-      <ChevronLeftIcon />
+      {isRtl ? <ChevronRightIcon /> : <ChevronLeftIcon />}
       <span className="sr-only">Previous slide</span>
     </Button>
   )
@@ -208,6 +226,8 @@ function CarouselNext({
   ...props
 }: React.ComponentProps<typeof Button>) {
   const { orientation, scrollNext, canScrollNext } = useCarousel()
+  const locale = useLocale()
+  const isRtl = locale === 'ar'
 
   return (
     <Button
@@ -217,7 +237,9 @@ function CarouselNext({
       className={cn(
         "absolute touch-manipulation rounded-full",
         orientation === "horizontal"
-          ? "top-1/2 -right-12 -translate-y-1/2"
+          ? isRtl
+            ? "top-1/2 -left-12 -translate-y-1/2"
+            : "top-1/2 -right-12 -translate-y-1/2"
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
@@ -225,7 +247,7 @@ function CarouselNext({
       onClick={scrollNext}
       {...props}
     >
-      <ChevronRightIcon />
+      {isRtl ? <ChevronLeftIcon /> : <ChevronRightIcon />}
       <span className="sr-only">Next slide</span>
     </Button>
   )

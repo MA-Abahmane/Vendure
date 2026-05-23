@@ -1,6 +1,7 @@
-'use client';
+ 'use client';
 
 import { useState } from 'react';
+import { useLocale } from 'next-intl';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,9 @@ export function ProductImageCarousel({ images }: ProductImageCarouselProps) {
         setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     };
 
+    const locale = useLocale();
+    const isRtl = locale === 'ar';
+
     return (
         <div className="space-y-4">
             {/* Main Image */}
@@ -51,18 +55,18 @@ export function ProductImageCarousel({ images }: ProductImageCarouselProps) {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="absolute left-3 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background shadow-sm opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
+                            className={`absolute ${isRtl ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background shadow-sm opacity-0 group-hover:opacity-100 transition-opacity rounded-full`}
                             onClick={goToPrevious}
                         >
-                            <ChevronLeft className="h-5 w-5" />
+                            {isRtl ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
                         </Button>
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="absolute right-3 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background shadow-sm opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
+                            className={`absolute ${isRtl ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background shadow-sm opacity-0 group-hover:opacity-100 transition-opacity rounded-full`}
                             onClick={goToNext}
                         >
-                            <ChevronRight className="h-5 w-5" />
+                            {isRtl ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
                         </Button>
                     </>
                 )}

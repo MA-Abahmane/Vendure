@@ -4,6 +4,7 @@ import {ProductCard} from "@/components/commerce/product-card";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious,} from "@/components/ui/carousel";
 import {FragmentOf} from "@/graphql";
 import {ProductCardFragment} from "@/lib/vendure/fragments";
+import {useLocale} from 'next-intl';
 import {useId} from "react";
 
 interface ProductCarouselClientProps {
@@ -13,6 +14,8 @@ interface ProductCarouselClientProps {
 
 export function ProductCarousel({title, products}: ProductCarouselClientProps) {
     const id = useId();
+    const locale = useLocale();
+    const isRtl = locale === 'ar';
 
     return (
         <section className="py-12 md:py-16">
@@ -22,13 +25,14 @@ export function ProductCarousel({title, products}: ProductCarouselClientProps) {
                     opts={{
                         align: "start",
                         loop: true,
+                        direction: isRtl ? 'rtl' : 'ltr',
                     }}
                     className="w-full"
                 >
-                    <CarouselContent className="-ml-2 md:-ml-4">
+                    <CarouselContent className={isRtl ? "-mr-2 md:-mr-4" : "-ml-2 md:-ml-4"}>
                         {products.map((product, i) => (
                             <CarouselItem key={id + i}
-                                          className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                                          className={isRtl ? "pr-2 md:pr-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4" : "pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"}>
                                 <ProductCard product={product}/>
                             </CarouselItem>
                         ))}
