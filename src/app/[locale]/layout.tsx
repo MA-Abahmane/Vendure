@@ -5,7 +5,7 @@ import {Geist, Geist_Mono} from "next/font/google";
 import {getMessages, getTranslations, setRequestLocale} from "next-intl/server";
 import {notFound} from "next/navigation";
 import {routing} from "@/i18n/routing";
-import {toOgLocale} from "@/i18n/locale-utils";
+import {getLocaleDirection, toOgLocale} from "@/i18n/locale-utils";
 import {getRouteLocale} from "@/i18n/server";
 import {Toaster} from "@/components/ui/sonner";
 import {Navbar} from "@/components/layout/navbar";
@@ -79,6 +79,7 @@ export const viewport: Viewport = {
 
 export default async function LocaleLayout({children}: {children: React.ReactNode}) {
     const locale = await rootLocale();
+    const direction = getLocaleDirection(locale);
 
     if (!hasLocale(routing.locales, locale)) {
         notFound();
@@ -88,7 +89,7 @@ export default async function LocaleLayout({children}: {children: React.ReactNod
     const messages = await getMessages({locale});
 
     return (
-        <html lang={locale} data-scroll-behavior="smooth" suppressHydrationWarning>
+        <html lang={locale} dir={direction} data-scroll-behavior="smooth" suppressHydrationWarning>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
             >
